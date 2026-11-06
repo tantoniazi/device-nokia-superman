@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 # BACKUP COMPLETO DO eMMC — OBRIGATÓRIO antes de QUALQUER escrita (Gates 1–2)
 # SDD §14 / build1 §E1 · Nenhum passo depois deste roda sem este backup validado.
+# ⚠ CORREÇÃO 2026-11-06: o FFU oficial NÃO contém firehose/programmer.
+#   ROTA PRIMÁRIA: WPInternals (Windows) → dump completo do eMMC (protocolo
+#   FlashApp do UEFI do aparelho). Este script é a rota ALTERNATIVA, só usável
+#   se um programmer msm8226 for obtido separadamente.
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
-FIREHOSE="$DIR/prog_emmc_firehose_8x26.mbn"   # extraído do FFU — NUNCA commitado
-[ -f "$FIREHOSE" ] || { echo "ERRO: copie o firehose do FFU para $FIREHOSE (ver ../firmware/firmware-manifest.yaml)"; exit 1; }
+FIREHOSE="${1:-}"
+if [ -z "$FIREHOSE" ] || [ ! -f "$FIREHOSE" ]; then
+  cat <<'AVISO'
+ERRO: sem firehose/programmer.
+  → Use a rota primária: WPInternals (Windows) → backup completo do eMMC.
+  → Ou obtenha um programmer msm8226 (pesquisa pendente) e rode:
+      ./backup.sh /caminho/prog_emmc_firehose_8x26.mbn
+AVISO
+  exit 1
+fi
 OUT="$DIR/../backup/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$OUT"
 # bkerler/edl (pip install edl) — conferir a sintaxe da versão instalada:
