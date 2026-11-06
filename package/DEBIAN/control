@@ -1,0 +1,11 @@
+Package: meridian-device-nokia-superman
+Version: 0.1.0
+Section: base
+Priority: optional
+Architecture: armhf
+Maintainer: Meridian Community <community@meridian-os.org>
+Depends: meridian-core-base
+Description: Device package — Nokia Lumia 730 (superman, MSM8226)
+ Kernel fragment + DTS + firmware manifest + hwinit + flash/recovery do
+ Lumia 730 para o Meridian Mobile OS (SDD-MERIDIAN-MOBILE.md §6).
+ Instalar em um aparelho novo = instalar o pacote dele (estilo Manjaro).

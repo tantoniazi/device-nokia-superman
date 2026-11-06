@@ -1,0 +1,10 @@
+#!/bin/sh
+# pós-instalação do device package (SDD §6.1)
+set -e
+DEVICE_DIR=/usr/share/meridian/devices/nokia-superman
+# hwinit register — TODO(E5): chamada real quando o hwinit estiver funcional
+if [ -x "$DEVICE_DIR/hwinit.sh" ]; then
+  "$DEVICE_DIR/hwinit.sh" || true
+fi
+# TODO(E5): registro no OSTree/boot (meridian-ota, ADR-012)
+exit 0

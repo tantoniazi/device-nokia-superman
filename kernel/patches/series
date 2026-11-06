@@ -1,0 +1,15 @@
+# Série quilt — kernel do Lumia 730 (superman/msm8226)
+# Base: linux-6.6.y. No bump 6.12 (B1.5) os cherry-picks 0001-0003 devem sumir.
+# REGRA (ADR-009): todo patch tem issue/ADR com o link da submissão upstream.
+# TODO(E3): verificar se a base 6.6 já traz msm8226.dtsi e pm8226.dtsi;
+#           se não, cherry-pick também desses arquivos antes do common dtsi.
+0001-ARM-dts-qcom-add-common-dt-for-MSM8x26-Lumias.patch
+# cherry-pick de 244281556a11549501eb5093e9ab0ad8a87b7d4f (mainline 6.7)
+0002-ARM-dts-qcom-add-device-tree-for-Nokia-Lumia-830.patch
+# cherry-pick de 8677233e59137f78d4d578f3d5a21557c1bab342 (referência "tesla")
+0003-ARM-dts-qcom-add-device-tree-for-Nokia-Lumia-730.patch
+# NOVO — deriva de dts/qcom-msm8226-microsoft-superman.dts deste repo
+0004-panel-superman-720p-OLED.patch
+# TODO(E4): driver do painel OLED (panel-simple ou dedicado)
+0005-touch-superman-i2c1.patch
+# TODO(E4): ajustes de touch conforme controlador identificado

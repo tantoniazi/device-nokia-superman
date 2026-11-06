@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: YAML lint (device.yaml, manifest, kas)
+        run: |
+          pip install yamllint
+          yamllint -d relaxed device.yaml firmware/firmware-manifest.yaml kas/meridian-superman.yml
+      - name: Blob guard — nenhum firmware/binário commitado (SDD §16)
+        run: |
+          find . -type f -size +256k -not -path './.git/*' | tee /tmp/blobs.txt
+          [ ! -s /tmp/blobs.txt ] || { echo 'ERRO: blobs commitados:'; cat /tmp/blobs.txt; exit 1; }
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build .deb do device package
+        run: ./build-package.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: meridian-device-nokia-superman
+          path: output/*.deb
+
+  # TODO(E3): job de kernel — cross-build armhf do 6.6.y + fragment + patches
+  # (kas build kas/meridian-superman.yml) e dtbs_check do DTS.

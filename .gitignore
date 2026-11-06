@@ -1,0 +1,9 @@
+backup/
+ffu-out/
+output/
+*.ffu
+*.mbn
+*.bin
+*.img
+*.deb
+*.dtb

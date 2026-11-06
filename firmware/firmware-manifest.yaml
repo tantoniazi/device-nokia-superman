@@ -1,0 +1,44 @@
+# Manifest de firmware proprietário — Lumia 730 (superman)
+# POLÍTICA (SDD §16): NUNCA commitar blobs. O usuário baixa o FFU oficial e extrai.
+# Fonte oficial: NaviFirm / Nokia Care Suite — product code do aparelho (059Wxxx)
+# Extração: ffu_extract ou thor2 · registrar SHA-256 de tudo abaixo
+blobs:
+  - id: firehose
+    file: prog_emmc_firehose_8x26.mbn
+    partition: none             # ferramenta de flash (QFIL/edl) — não vai ao eMMC
+    source: FFU oficial (diretório Image/)
+    sha256: TO_FILL_AFTER_EXTRACT
+  - id: sbl1
+    file: sbl1.mbn
+    partition: sbl1
+    note: backup apenas — preservar os originais do aparelho
+    sha256: TO_FILL_AFTER_EXTRACT
+  - id: tz
+    file: tz.mbn
+    partition: tz
+    note: backup apenas
+    sha256: TO_FILL_AFTER_EXTRACT
+  - id: rpm
+    file: rpm.mbn
+    partition: rpm
+    note: backup apenas
+    sha256: TO_FILL_AFTER_EXTRACT
+  - id: aboot
+    file: aboot.mbn
+    partition: aboot
+    note: backup apenas — depois substituído pelo lk2nd (E2)
+    sha256: TO_FILL_AFTER_EXTRACT
+  - id: modem
+    file: NON-HLOS.bin
+    partition: modem
+    scope: B1.5
+    sha256: TO_FILL_AFTER_EXTRACT
+  - id: wcnss-firmware
+    files: [wcnss.b00, wcnss.b01, wcnss.b02, wcnss.b04, wcnss.mdt]
+    target: /lib/firmware/wlan/prima
+    scope: B1.5
+    sha256: TO_FILL_AFTER_EXTRACT
+free-firmware:
+  - id: adreno-a3xx
+    source: linux-firmware (qcom/a3xx_*.fw)
+    note: redistribuível — já coberto pelo pacote linux-firmware

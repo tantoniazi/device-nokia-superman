@@ -1,0 +1,44 @@
+# device.yaml — metadados do aparelho (fonte da verdade do device package)
+# SDD: os/SDD-MERIDIAN-MOBILE.md §6 · Plano: os/docs/lumia730-build1.md
+device:
+  vendor: nokia
+  codename: superman            # msm8226 — LUMIA 730 (o 735 é "superman-lte"/msm8926)
+  commercial-name: Nokia Lumia 730
+  models: [RM-1017, RM-1018]    # single/dual SIM (3G)
+  soc: msm8226                  # Snapdragon 400 · 4x Cortex-A7 (ARM32, 28nm)
+  ram: 1GB-LPDDR3
+  storage: 8GB-eMMC-4.5
+  display:
+    size-in: 4.7
+    resolution: 720x1280
+    panel: OLED-MIPI-DSI
+    driver: TBD                 # TODO(E4): identificar painel (strings do FFU + common dtsi)
+  touch:
+    bus: i2c1
+    controller: TBD             # TODO(E4): provável Synaptics RMI4 (ver qcom-msm8226-microsoft-common.dtsi)
+  modem:
+    present: true
+    firmware: NON-HLOS.bin
+    scope: B1.5                 # FORA da Build 1 (decisão D3)
+  wifi: { chip: WCN3620, driver: wcn36xx, scope: B1.5 }
+  bluetooth: { chip: WCN3620, transport: uart, scope: B1.5 }
+  gpu: { chip: Adreno-305, driver: freedreno-a3xx }   # fallback llvmpipe documentado
+boot:
+  chain: [PBL, SBL1, TZ, RPM, aboot, lk2nd, kernel+DTB, initramfs, OSTree]
+  unlock: WPInternals           # github.com/ReneLergner/WPinternals (host Windows)
+  boot-menu: EFIESP             # guias: wiki.postmarketos.org/wiki/Windows_Phone
+  shim: boot-shim@elf-loader-pre3
+  edl: { usb-id: 05c6:9008, firehose: flash/prog_emmc_firehose_8x26.mbn }
+build:
+  kas: kas/meridian-superman.yml
+  kernel-fragment: kernel/fragment.config
+  kernel-patches: kernel/patches/series
+  dts: dts/qcom-msm8226-microsoft-superman.dts
+  kernel-base: linux-6.6.y      # cherry-picks msm8226; bump 6.12 no B1.5
+status: EXPERIMENTAL            # espelha DEVICE_MATRIX.md
+device-in-hands: true           # confirmado 2026-11-06
+references:
+  sdd: https://github.com/tantoniazi/meridian-os (SDD-MERIDIAN-MOBILE.md §6/§14)
+  build-plan: https://github.com/tantoniazi/meridian-os (docs/lumia730-build1.md)
+  research-gates: https://github.com/tantoniazi/meridian-os (docs/lumia730-research.md)
+  mainline-series: https://patchew.org/linux/20230930221323.101289-1-rayyan@ansari.sh/

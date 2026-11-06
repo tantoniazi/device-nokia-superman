@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Nokia Lumia 730 — codename "superman" (MSM8226, 3G, dual SIM RM-1018).
+ * Derivado de qcom-msm8226-microsoft-common.dtsi (mainline 6.7+).
+ * Referências diretas na família:
+ *   - qcom-msm8926-microsoft-superman-lte.dts (Lumia 735)
+ *   - qcom-msm8926-microsoft-tesla.dts        (Lumia 830)
+ * SDD: os/SDD-MERIDIAN-MOBILE.md §7 · gates: docs/lumia730-research.md
+ */
+/dts-v1/;
+
+#include "qcom-msm8226-microsoft-common.dtsi"
+
+/ {
+	model = "Nokia Lumia 730";
+	compatible = "microsoft,superman", "qcom,msm8226";
+	chassis-type = "handset";
+
+	chosen {
+		/* TODO(E3): confirmar o alias do UART de debug no common dtsi */
+		stdout-path = "serial0:115200n8";
+	};
+
+	/* TODO(E4): painel OLED 4.7" 720x1280 (MIPI DSI) — driver a identificar */
+	/* TODO(E4): touch — o common dtsi traz o candidato em i2c1; confirmar modelo */
+	/* TODO(B1.5): Wi-Fi WCN3620 (wcn36xx), BT (uart), modem (QRTR/QMI + NON-HLOS) */
+};

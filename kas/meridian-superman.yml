@@ -1,0 +1,20 @@
+# KAS — build Meridian para Lumia 730 (superman)
+# ESQUELETO: alinhar com o schema real de build/meridian-n900.yml do monorepo
+# (https://github.com/tantoniazi/meridian-os → build/) antes do E5.
+header:
+  version: 14
+target: phone-superman
+branches: [trixie]
+kernel:
+  image: linux-image-meridian-msm8226
+  fragment: kernel/fragment.config
+  patches: kernel/patches/series
+  dts: dts/qcom-msm8226-microsoft-superman.dts
+device-package: meridian-device-nokia-superman
+packages-core: build/packages/core.yaml   # whitelist do monorepo (~350 pkgs)
+ostree:
+  ref: meridian/phone-superman
+  ab: true
+flash:
+  rawprogram: flash/rawprogram.xml
+  patch: flash/patch.xml

@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<!-- TODO(E5): gerar a partir do GPT do aparelho (edl printgpt) — NÃO usar um genérico.
+     Preservar sbl1/tz/rpm/modem; gravar apenas aboot(lk2nd), boot e rootfs. -->
+<data />
