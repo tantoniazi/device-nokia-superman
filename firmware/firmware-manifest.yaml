@@ -1,44 +1,28 @@
-# Manifest de firmware proprietário — Lumia 730 (superman)
-# POLÍTICA (SDD §16): NUNCA commitar blobs. O usuário baixa o FFU oficial e extrai.
-# Fonte oficial: NaviFirm / Nokia Care Suite — product code do aparelho (059Wxxx)
-# Extração: ffu_extract ou thor2 · registrar SHA-256 de tudo abaixo
-blobs:
-  - id: firehose
-    file: prog_emmc_firehose_8x26.mbn
-    partition: none             # ferramenta de flash (QFIL/edl) — não vai ao eMMC
-    source: FFU oficial (diretório Image/)
-    sha256: TO_FILL_AFTER_EXTRACT
-  - id: sbl1
-    file: sbl1.mbn
-    partition: sbl1
-    note: backup apenas — preservar os originais do aparelho
-    sha256: TO_FILL_AFTER_EXTRACT
-  - id: tz
-    file: tz.mbn
-    partition: tz
-    note: backup apenas
-    sha256: TO_FILL_AFTER_EXTRACT
-  - id: rpm
-    file: rpm.mbn
-    partition: rpm
-    note: backup apenas
-    sha256: TO_FILL_AFTER_EXTRACT
-  - id: aboot
-    file: aboot.mbn
-    partition: aboot
-    note: backup apenas — depois substituído pelo lk2nd (E2)
-    sha256: TO_FILL_AFTER_EXTRACT
-  - id: modem
-    file: NON-HLOS.bin
-    partition: modem
-    scope: B1.5
-    sha256: TO_FILL_AFTER_EXTRACT
-  - id: wcnss-firmware
-    files: [wcnss.b00, wcnss.b01, wcnss.b02, wcnss.b04, wcnss.mdt]
-    target: /lib/firmware/wlan/prima
-    scope: B1.5
-    sha256: TO_FILL_AFTER_EXTRACT
-free-firmware:
-  - id: adreno-a3xx
-    source: linux-firmware (qcom/a3xx_*.fw)
-    note: redistribuível — já coberto pelo pacote linux-firmware
+# Manifest de firmware proprietário — Lumia 730 Dual SIM (RM-1040, 059W631)
+# POLÍTICA (SDD §16 + ADR-014 da org): NUNCA commitar blobs. Fonte: FFU oficial baixado pelo usuário.
+# FFU: RM1040_02040.00021.15235.30004_RETAIL_prod_signed_1009_02785B_000-BY_MV.ffu (1.8 GB)
+# Extração local (2026-11-06): ffu-extract-lumia.py (parser fiel ao FFU.cs do WPInternals)
+#   → ../../Nokia_Lumia_730_Dual_SIM_RM-1040/ffu-out/ (FORA de qualquer repo, gitignored)
+ffu:
+  file: RM1040_02040.00021.15235.30004_RETAIL_prod_signed_1009_02785B_000-BY_MV.ffu
+  product-code: 059W631
+  platform-id: Nokia.MSM8226.P6164
+  sw-version: 02040.00021.15235.30000
+  source: firmwarefile.com (espelho) — conferir contra NaviFirm/Care Suite quando possível
+partitions:                    # extraídas do GPT do FFU (sha256 das imagens carvadas)
+  - { name: SBL1,  sectors: "53248..54271",   sha256: 525c90b631f3bf9b8c6951c161cce0418e0100af7b9efc9117607809eead0624 }
+  - { name: DBI,   sectors: "57344..57407",   sha256: c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479 }
+  - { name: UEFI,  sectors: "61440..65535",   sha256: d2e60e590f296336d5bfdf9a810dc28aea43e1b70e37195cd6432323edd92ce8 }
+  - { name: RPM,   sectors: "65536..66535",   sha256: f43d1becdbd9d64d2d9fce50b4f6a2a6e70f83d58c974695da0173ffbd7d4090 }
+  - { name: TZ,    sectors: "69632..70631",   sha256: af42970813ae7334070aedecafe79ff8a0a0860e218e50fc2b13a1878a5b6299 }
+  - { name: WINSECAPP, sectors: "73728..74751", sha256: 18802dfcc903e527a89399f8c68e4d56e4678cb2a5607627fbfa4cd1cfec28d8 }
+  - { name: PLAT,  sectors: "167936..184319", sha256: 39e56f654fcf70d7a0f63b4a43424b2983a70f7c7c59da100e1504dc1100dcf2 }
+  - { name: EFIESP, sectors: "184320..249855", sha256: edc3989574210375b8413f92c86a09339d30aaf2afb67e8859335e5e90494cd3 }
+  - { name: MainOS, sectors: "262144..5533599", sha256: TO_FILL (2.5 GB — hash na primeira necessidade) }
+  - { name: Data,  sectors: "5537792..15265791", note: dados do usuário — não usado }
+notes:
+  - FFU NÃO contém firehose/programmer → flash pela rota WPInternals (protocolo FlashApp do UEFI)
+  - MODEM_FS1/FS2/FSC vazias no FFU (partições de EFS criadas no 1º boot)
+  - firmware do modem (B1.5): localizar arquivos dentro do MainOS carvado
+  - BACKUP_* (SBL1/DBI/UEFI/RPM/TZ/WINSECAPP/TZAPPS): cópias de segurança do próprio aparelho — preservar
+  - PARTIÇÃO-ALVO do boot Meridian: EFIESP (boot menu) — ver docs do pmOS Windows Phone

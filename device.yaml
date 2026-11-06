@@ -1,34 +1,41 @@
 # device.yaml — metadados do aparelho (fonte da verdade do device package)
 # SDD: os/SDD-MERIDIAN-MOBILE.md §6 · Plano: os/docs/lumia730-build1.md
+# FATOS EXTRAÍDOS DO FFU OFICIAL (2026-11-06) — ver firmware/firmware-manifest.yaml
 device:
   vendor: nokia
-  codename: superman            # msm8226 — LUMIA 730 (o 735 é "superman-lte"/msm8926)
-  commercial-name: Nokia Lumia 730
-  models: [RM-1017, RM-1018]    # single/dual SIM (3G)
-  soc: msm8226                  # Snapdragon 400 · 4x Cortex-A7 (ARM32, 28nm)
+  codename: superman            # mainline DTS: qcom-msm8226-microsoft-superman (730/735 família)
+  commercial-name: Nokia Lumia 730 Dual SIM
+  models: [RM-1040, RM-1041]    # dual SIM 3G (RM-1038/1039 = 735 LTE — não este aparelho)
+  product-code: 059W631         # do FFU baixado
+  soc: msm8226                  # Snapdragon 400 · 4x Cortex-A7 (ARM32) — FFU: Nokia.MSM8226.P6164
+  firmware-build: 02040.00021.15235.30004   # WP8.1 (SWVERSION da partição PLAT)
   ram: 1GB-LPDDR3
-  storage: 8GB-eMMC-4.5
+  storage: 8GB-eMMC-4.5         # GPT do FFU: 7.28 GiB, 27 partições
   display:
     size-in: 4.7
     resolution: 720x1280
     panel: OLED-MIPI-DSI
-    driver: TBD                 # TODO(E4): identificar painel (strings do FFU + common dtsi)
+    driver: oempanel.sys (WP8)  # ID do painel vem de variável UEFI/registry — família Samsung S6E provável
+    candidate: TBD              # TODO(E4): confirmar via UART (dmesg/probe)
   touch:
-    bus: i2c1
-    controller: TBD             # TODO(E4): provável Synaptics RMI4 (ver qcom-msm8226-microsoft-common.dtsi)
+    bus: i2c1                   # qcom-msm8226-microsoft-common.dtsi (mainline)
+    controller: synaptics       # SynapticsTouch.sys no MainOS; driver atmel/MXT AUSENTE
+    driver-linux: synaptics-rmi4 (mainline)
   modem:
     present: true
-    firmware: NON-HLOS.bin
-    scope: B1.5                 # FORA da Build 1 (decisão D3)
+    note: FFU não tem partição modem-dedicada com firmware — MODEM_FS1/FS2 vazias (criadas no 1º boot);
+          firmware do modem vive em arquivos dentro do MainOS (localizar no B1.5)
+    scope: B1.5
   wifi: { chip: WCN3620, driver: wcn36xx, scope: B1.5 }
   bluetooth: { chip: WCN3620, transport: uart, scope: B1.5 }
   gpu: { chip: Adreno-305, driver: freedreno-a3xx }   # fallback llvmpipe documentado
 boot:
-  chain: [PBL, SBL1, TZ, RPM, aboot, lk2nd, kernel+DTB, initramfs, OSTree]
+  scheme: UEFI                  # SEM partição boot/recovery estilo Android — boot chain WP8.1:
+  chain: [PBL, SBL1, DBI, UEFI, EFI-bootloader, kernel+DTB (EFIESP/boot menu), initramfs, OSTree]
+  boot-menu: EFIESP (32 MB)     # guias: wiki.postmarketos.org/wiki/Windows_Phone
   unlock: WPInternals           # github.com/ReneLergner/WPinternals (host Windows)
-  boot-menu: EFIESP             # guias: wiki.postmarketos.org/wiki/Windows_Phone
-  shim: boot-shim@elf-loader-pre3
-  edl: { usb-id: 05c6:9008, firehose: flash/prog_emmc_firehose_8x26.mbn }
+  flash: WPInternals            # FFU não contém firehose → QFIL/edl só com programmer obtido à parte (TODO)
+  edl: { usb-id: 05c6:9008, note: rota de emergência/test points }
 build:
   kas: kas/meridian-superman.yml
   kernel-fragment: kernel/fragment.config
@@ -37,8 +44,10 @@ build:
   kernel-base: linux-6.6.y      # cherry-picks msm8226; bump 6.12 no B1.5
 status: EXPERIMENTAL            # espelha DEVICE_MATRIX.md
 device-in-hands: true           # confirmado 2026-11-06
+firmware-extracted: true        # FFU RM-1040 059W631 extraído e inventariado 2026-11-06
 references:
-  sdd: https://github.com/tantoniazi/meridian-os (SDD-MERIDIAN-MOBILE.md §6/§14)
-  build-plan: https://github.com/tantoniazi/meridian-os (docs/lumia730-build1.md)
-  research-gates: https://github.com/tantoniazi/meridian-os (docs/lumia730-research.md)
+  sdd: SDD-MERIDIAN-MOBILE.md (repo meridian-os) §6/§14
+  build-plan: docs/lumia730-build1.md
+  research-gates: docs/lumia730-research.md
   mainline-series: https://patchew.org/linux/20230930221323.101289-1-rayyan@ansari.sh/
+  ffu-parser: /tmp/opencode/ffu2img/ffu-extract-lumia.py (derivado do FFU.cs do WPInternals)
